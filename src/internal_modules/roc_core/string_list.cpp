@@ -130,6 +130,34 @@ bool StringList::push_back(const char* str_begin, const char* str_end) {
     return true;
 }
 
+void StringList::pop_back() {
+    // Check if the list is empty
+    if (size_ == 0) {
+        return;
+    }
+    // Calculate the block size of the last string
+    Header* str_header = back_;
+    size_t blk_sz = str_header->len;
+    // Check if the block size is valid
+    if (blk_sz == 0 || blk_sz > data_.size()) {
+        roc_panic("stringlist: invalid block size");
+    }
+    // Decrement the size of the list
+    size_--;
+    // Resize the data to remove the last string
+    if (!data_.resize(data_.size() - blk_sz)) {
+        roc_panic("stringlist: Data resize failure");
+    }
+    // Update back_ to point to the new last string
+    if (size_ > 0) {
+        back_ = (Header*)(data_.data() + data_.size() - blk_sz);
+    } else { // If the list is now empty, reset back_ and front_
+        back_ = nullptr;
+        front_ = nullptr;
+    }
+    return true;
+}
+
 const char* StringList::find(const char* str) {
     if (str == NULL) {
         roc_panic("stringlist: string is null");
