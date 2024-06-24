@@ -87,6 +87,9 @@ public:
     //!  false if allocation failed.
     ROC_ATTR_NODISCARD bool push_back(const char* str_begin, const char* str_end);
 
+    //! Removes last item of list
+    void pop_back();
+
     //! Find string in the list.
     //! @returns
     //!  the string in the list or NULL if it is not found.
